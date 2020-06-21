@@ -6,6 +6,7 @@ export default {
     console.log(endpoint)
     console.log(ticker)
     console.log('inside get_option data!')
+    console.log(endpoint)
     var response = await axios.get(endpoint)
     console.log(response)
     console.log(response.data)
