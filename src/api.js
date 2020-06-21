@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://127.0.0.1:8000'
+const baseUrl = 'https://condor-backend-django.herokuapp.com'
 export default {
   async get_option_data (ticker) {
     var endpoint = baseUrl + '/api/v1/get_option_data/' + ticker + '/'
