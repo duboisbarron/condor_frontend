@@ -1,6 +1,5 @@
 <template>
   <v-app>
-
     <v-row>
       <v-col cols="4"></v-col>
     <v-col cols="12" sm="2">
@@ -101,9 +100,63 @@
     <v-data-table
       :headers="headers"
       :items="condors"
-      :items-per-page="20"
+      :items-per-page="10"
+      :expanded.sync="expanded"
+      show-expand
+      single-expand=true
       class="elevation-1"
-    ></v-data-table>
+    >
+      <template v-slot:expanded-item="{ headers, item }">
+        <td :colspan="headers.length">
+          <RandomChart
+          :share_price="item.current_share_price"
+          :long_put_strike="item.buy_put"
+          :short_put_strike="item.short_put"
+          :short_call_strike="item.short_call"
+          :long_call_strike="item.buy_call"
+
+          :long_put_prem="item.buy_put_premium"
+          :short_put_prem="item.short_put_premium"
+          :short_call_prem="item.short_call_premium"
+          :long_call_prem="item.buy_call_premium"
+
+          ></RandomChart>
+          {{item.max_gain}}
+          {{item.max_loss}}
+          {{item.short_call}}
+
+        </td>
+      </template>
+
+      <template v-slot:item.max_gain="{ item }">
+        <v-chip color="green" dark>{{ item.max_gain }}</v-chip>
+      </template>
+      <template v-slot:item.max_loss="{ item }">
+        <v-chip color="red" dark>{{ item.max_loss }}</v-chip>
+      </template>
+<!--      <template v-slot:item.graph_button="{ item }">-->
+<!--        <v-btn-->
+<!--          text="true"-->
+<!--          color="primary"-->
+<!--          @click="graph_condor(item)"-->
+<!--        > Graph </v-btn>-->
+<!--      </template>-->
+
+<!--      <template v-slot:expanded-item="{ headers, item }">-->
+<!--        <td :colspan="headers.length">More info about {{ item.name }}</td>-->
+<!--      </template>-->
+<!--      <template v-slot:item="row">-->
+<!--        <tr>-->
+<!--          <td>{{row.item.no}}</td>-->
+<!--          <td>{{row.item.result}}</td>-->
+<!--          <td>-->
+<!--            <v-btn class="mx-2" dark small color="pink" @click="onButtonClick(row.item)">-->
+<!--              Graph Me-->
+<!--            </v-btn>-->
+<!--          </td>-->
+<!--        </tr>-->
+<!--      </template>-->
+    </v-data-table>
   </v-app>
 </template>
 
@@ -111,10 +164,14 @@
 
 import api from './api.js'
 
+import RandomChart from './components/RandomChart'
+
+
 export default {
   name: 'App',
 
   components: {
+    RandomChart
   },
   methods: {
     button_click: function () {
@@ -130,6 +187,10 @@ export default {
         .then(data => {
           this.condors = data
         })
+    },
+    graph_condor: function (item) {
+      console.log('clicked button')
+      console.log(item)
     },
 
     risk_reward_filter: function () {
@@ -152,6 +213,15 @@ export default {
   },
   data () {
     return {
+
+      graph_data: [{
+        x: 10,
+        y: 20
+      }, {
+        x: 15,
+        y: 10
+      }],
+      expanded: [],
       expiration: '',
       ticker: '',
       risk_reward_filter_value: '',
@@ -175,36 +245,40 @@ export default {
         { text: 'Buy Put Premium', value: 'buy_put_premium' },
         { text: 'Short Put Premium', value: 'short_put_premium' },
         { text: 'Short Call Premium', value: 'short_call_premium' },
-        { text: 'Buy Call Premium', value: 'buy_call_premium' }
+        { text: 'Buy Call Premium', value: 'buy_call_premium' },
+        // { text: 'Graph', value: 'graph_button' },
       ],
       condors: [
         {
-          buy_put: 5.79,
-          short_put: 10.79,
-          current_share_price: 12.00,
-          short_call: 15.79,
-          buy_call: 20.79,
-          buy_put_premium: 0.1,
-          short_put_premium: 0.5,
-          short_call_premium: 0.2,
-          buy_call_premium: 0.1,
-          max_gain: 0.49999999999999994,
-          max_loss: -4.5,
-          risk_reward: 0.1111111111111111
+          id: 1,
+          buy_put: 45.0,
+          short_put: 50.0,
+          current_share_price: 50.0,
+          short_call: 55.0,
+          buy_call: 60.0,
+          buy_put_premium: 0.78,
+          short_put_premium: 2.21,
+          short_call_premium: 2.32,
+          buy_call_premium: 1.01,
+          max_gain: 274,
+          max_loss: -262,
+          risk_reward: 1.04
         },
+
         {
-          buy_put: 5.79,
-          short_put: 10.79,
-          current_share_price: 12.00,
-          short_call: 15.79,
-          buy_call: 20.79,
-          buy_put_premium: 0.1,
-          short_put_premium: 0.5,
-          short_call_premium: 0.2,
-          buy_call_premium: 0.1,
-          max_gain: 0.49999999999999994,
-          max_loss: -4.5,
-          risk_reward: 0.1111111111111111
+          id: 2,
+          buy_put: 45.0,
+          short_put: 50.0,
+          current_share_price: 50.0,
+          short_call: 55.0,
+          buy_call: 60.0,
+          buy_put_premium: 0.78,
+          short_put_premium: 2.21,
+          short_call_premium: 2.32,
+          buy_call_premium: 1.01,
+          max_gain: 274,
+          max_loss: -262,
+          risk_reward: 1.04
         }
 
       ]
