@@ -144,7 +144,7 @@
 
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
-          Hello
+          More info can go here
           <CondorChart
           :share_price="item.current_share_price"
           :long_put_strike="item.buy_put"
@@ -257,7 +257,7 @@ export default {
         })
     },
     find_condors: function () {
-      console.log('finding iron condors')
+      // console.log('finding iron condors')
       api.get_condors(this.ticker, this.expiration)
         .then(data => {
           this.condors = data
