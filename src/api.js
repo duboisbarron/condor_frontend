@@ -3,14 +3,7 @@ const baseUrl = 'https://condor-backend-django.herokuapp.com'
 export default {
   async get_option_data (ticker) {
     var endpoint = baseUrl + '/api/v1/get_option_data/' + ticker + '/'
-    console.log(endpoint)
-    console.log(ticker)
-    console.log('inside get_option data!')
-    console.log(endpoint)
-    console.log('hello there look at me!!!')
     var response = await axios.get(endpoint)
-    console.log(response)
-    console.log(response.data)
     return response.data
   },
   async get_condors (ticker, expiration) {
@@ -22,7 +15,6 @@ export default {
       }
     }
     var response = await axios.get(endpoint, body)
-    console.log(response)
     return response.data
   }
 }

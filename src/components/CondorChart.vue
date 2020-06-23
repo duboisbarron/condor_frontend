@@ -74,6 +74,7 @@
             return 'red'
           }
         })
+
         this.graph_colors = newArr
 
       },
@@ -91,64 +92,55 @@
 
         while (next_val < upper_bound){
 
-          x_values.push(next_val.toFixed(2))
+          x_values.push(Number(next_val.toFixed(2)))
           next_val += step_size
         }
-        console.log(x_values)
 
         this.graph_x_values = x_values
+
       },
 
       get_y_values (long_put_strike, short_put_strike, short_call_strike, long_call_strike,
                     long_put_prem, short_put_prem, short_call_prem, long_call_prem) {
-        console.log('GENERATING Y VALUES')
-        console.log(short_call_strike)
-        console.log(short_put_strike)
 
         var max_profit = (short_put_prem + short_call_prem) - (long_put_prem + long_call_prem)
-
 
         var newArr = this.graph_x_values.map(function(share_price, index){
 
           if((share_price < short_call_strike) && (share_price > short_put_strike)){
-            console.log((100.0 * max_profit).toFixed(2))
-            return (100.0 * max_profit).toFixed(2)
+
+            return Number((100.0 * max_profit).toFixed(2))
+
           } else if (share_price < long_put_strike) {
             // loss, both puts in money
-            return (-100.0 * ((short_put_strike - long_put_strike) - max_profit)).toFixed(2)
+            return Number((-100.0 * ((short_put_strike - long_put_strike) - max_profit)).toFixed(2))
+
           } else if (share_price > long_call_strike){
             // loss, both calls in money
-            return (-100.0 * ((long_call_strike - short_call_strike) - max_profit)).toFixed(2)
-
+            return Number((-100.0 * ((long_call_strike - short_call_strike) - max_profit)).toFixed(2))
 
           } else if (share_price > short_call_strike && share_price < long_call_strike){
-            return (100.0 * (max_profit - (share_price - short_call_strike))).toFixed(2)
+
+            return Number((100.0 * (max_profit - (share_price - short_call_strike))).toFixed(2))
+
           } else if (share_price < short_put_strike && share_price > long_put_strike){
-            return (100.0 * (max_profit - (short_put_strike - share_price))).toFixed(2)
+
+            return Number((100.0 * (max_profit - (short_put_strike - share_price))).toFixed(2))
+
           }
-
-          //net premium received – (underlying price – short call strike)
-          // TODO: FINISH THIS FUNCTION!!!
-
 
         })
 
-        console.log("generated new y values!!")
-        console.log(newArr)
-
         this.graph_y_values = newArr
-
 
       },
 
       fillData () {
         this.datacollection = {
-          // is this the x axis?
+          // this is the x axis
           labels: this.graph_x_values,
-          // labels: [30, 31, 32, 33, 34, 35, 36, 37],
           datasets: [{
-            // label: '# of Votes',
-            // is this the y axis?
+            // this is the y axis
             data: this.graph_y_values,
             // backgroundColor: 'red',
             backgroundColor: this.graph_colors,
@@ -157,31 +149,6 @@
             showLine: false,
             lineTension: 0,
             fill: true,
-            // spanGaps: true,
-
-            // backgroundColor: [
-            //   // 'green',
-            //   'rgba(255, 99, 132, 0.2)',
-            //   // 'green',
-            //   'rgba(54, 162, 235, 0.2)',
-            //   'rgba(255, 206, 86, 0.2)',
-            //   'rgba(75, 192, 192, 0.2)',
-            //   // 'green',
-            //   // 'green'
-            //   'rgba(153, 102, 255, 0.2)',
-            //   'rgba(255, 159, 64, 0.2)'
-            // ],
-            // borderColor: [
-            //   // 'green',
-            //   // 'green'
-            //   'rgba(255, 99, 132, 1)',
-            //   'rgba(54, 162, 235, 1)',
-            //   'rgba(255, 206, 86, 1)',
-            //   'rgba(75, 192, 192, 1)',
-            //   'rgba(153, 102, 255, 1)',
-            //   'rgba(255, 159, 64, 1)'
-            // ],
-            // borderWidth: 1
           }]
         }
       },

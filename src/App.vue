@@ -12,7 +12,7 @@
 
     <v-col cols="12" sm="2">
       <v-btn
-        text="true"
+        text
         color="green"
         @click="button_click"
       > Get Option Data </v-btn>
@@ -24,10 +24,9 @@
       <v-col cols="4"></v-col>
       <v-col cols="12" sm="2">
         <v-text-field
-          v-model="last"
           solo-inverted
           :label=this.current_share_price
-          disabled="true"
+          disabled
         ></v-text-field>
       </v-col>
 
@@ -41,7 +40,7 @@
       </v-col>
       <v-col cols="12" sm="2">
         <v-btn
-          text="true"
+          text
           color="green"
           @click="find_condors"
         > Find Condors </v-btn>
@@ -49,7 +48,9 @@
     </v-row>
 
     <v-row>
+
       <v-col cols="4"></v-col>
+
       <v-col cols="12" sm="2">
         <v-text-field
           v-model="risk_reward_filter_value"
@@ -57,16 +58,21 @@
           label="Min Risk Reward"
         ></v-text-field>
       </v-col>
+
     <v-col cols="12" sm="2">
       <v-btn
-        text="true"
+        text
         color="green"
         @click="risk_reward_filter"
       > Filter by Risk Reward </v-btn>
     </v-col>
+
     </v-row>
+
     <v-row>
+
       <v-col cols="4"></v-col>
+
       <v-col cols="12" sm="2">
         <v-text-field
           v-model="strike_filter_value"
@@ -74,14 +80,14 @@
           label="% Strike Difference"
         ></v-text-field>
       </v-col>
+
       <v-col cols="12" sm="2">
         <v-btn
-          text="true"
+          text
           color="green"
           @click="strike_filter"
         > Filter by Strikes </v-btn>
       </v-col>
-
 
     </v-row>
 
@@ -89,26 +95,57 @@
       <v-col cols="5"></v-col>
       <v-col cols="12" sm="2">
         <v-btn
-          text="true"
+          text
           color="green"
           @click="find_condors"
         > Reset Condors </v-btn>
       </v-col>
-
     </v-row>
 
     <v-data-table
       :headers="headers"
-      :items="condors"
       :items-per-page="10"
       :expanded.sync="expanded"
+      :items="condors"
       show-expand
-      single-expand=true
+      single-expand
       class="elevation-1"
     >
+      <template v-slot:item.data-table-expand="{ item, isExpanded, expand }">
+        <v-btn @click="expand(true)">Expand</v-btn>
+      </template>
+
+      <template v-slot:item="{ item, expand, isExpanded }">
+        <tr>
+          <td><v-btn @click="expand(!isExpanded)">Graph</v-btn></td>
+          <td><v-chip color="green" dark>{{ item.max_gain }}</v-chip></td>
+          <td><v-chip color="red" dark>{{ item.max_loss }}</v-chip></td>
+          <td>{{ item.risk_reward }}</td>
+
+          <td @mouseenter="show_BA_buy_put()" @mouseleave="hide_BA_buy_put()">{{ item.buy_put_premium }}</td>
+          <td v-if="bp_BA_col"> {{item.buy_put_BA}}</td>
+
+          <td @mouseenter="show_BA_short_put" @mouseleave="hide_BA_short_put">{{ item.short_put_premium }}</td>
+          <td v-if="sp_BA_col"> {{item.short_put_BA}}</td>
+
+          <td @mouseenter="show_BA_short_call" @mouseleave="hide_BA_short_call">{{ item.short_call_premium }}</td>
+          <td v-if="sc_BA_col"> {{item.short_call_BA}}</td>
+
+          <td @mouseenter="show_BA_buy_call" @mouseleave="hide_BA_buy_call">{{ item.buy_call_premium }}</td>
+          <td v-if="bc_BA_col"> {{item.buy_call_BA}}</td>
+
+          <td >{{ item.buy_put }}</td>
+          <td >{{ item.short_put }}</td>
+          <td>{{ item.current_share_price }}</td>
+          <td >{{ item.short_call }}</td>
+          <td >{{ item.buy_call }}</td>
+        </tr>
+      </template>
+
       <template v-slot:expanded-item="{ headers, item }">
         <td :colspan="headers.length">
-          <RandomChart
+          Hello
+          <CondorChart
           :share_price="item.current_share_price"
           :long_put_strike="item.buy_put"
           :short_put_strike="item.short_put"
@@ -120,43 +157,14 @@
           :short_call_prem="item.short_call_premium"
           :long_call_prem="item.buy_call_premium"
 
-          ></RandomChart>
-          {{item.max_gain}}
-          {{item.max_loss}}
-          {{item.short_call}}
+          ></CondorChart>
+          More info can go here
 
         </td>
       </template>
 
-      <template v-slot:item.max_gain="{ item }">
-        <v-chip color="green" dark>{{ item.max_gain }}</v-chip>
-      </template>
-      <template v-slot:item.max_loss="{ item }">
-        <v-chip color="red" dark>{{ item.max_loss }}</v-chip>
-      </template>
-<!--      <template v-slot:item.graph_button="{ item }">-->
-<!--        <v-btn-->
-<!--          text="true"-->
-<!--          color="primary"-->
-<!--          @click="graph_condor(item)"-->
-<!--        > Graph </v-btn>-->
-<!--      </template>-->
-
-<!--      <template v-slot:expanded-item="{ headers, item }">-->
-<!--        <td :colspan="headers.length">More info about {{ item.name }}</td>-->
-<!--      </template>-->
-<!--      <template v-slot:item="row">-->
-<!--        <tr>-->
-<!--          <td>{{row.item.no}}</td>-->
-<!--          <td>{{row.item.result}}</td>-->
-<!--          <td>-->
-<!--            <v-btn class="mx-2" dark small color="pink" @click="onButtonClick(row.item)">-->
-<!--              Graph Me-->
-<!--            </v-btn>-->
-<!--          </td>-->
-<!--        </tr>-->
-<!--      </template>-->
     </v-data-table>
+
   </v-app>
 </template>
 
@@ -164,16 +172,83 @@
 
 import api from './api.js'
 
-import RandomChart from './components/RandomChart'
-
+import CondorChart from './components/CondorChart'
 
 export default {
   name: 'App',
 
   components: {
-    RandomChart
+    CondorChart
   },
+  computed: {
+    headers() {
+      let headers = []
+      headers.push(
+        {
+          text: 'Max Gain',
+          align: 'start',
+          sortable: true,
+          value: 'max_gain'
+        },
+        { text: 'Max Loss', value: 'max_loss' },
+        { text: 'Risk Reward', value: 'risk_reward' }
+      )
+
+        headers.push({ text: 'Buy Put Premium', value: 'buy_put_premium' })
+        if (this.bp_BA_col){
+          headers.push({text: 'Buy Put Bid/Ask Spread', value: 'buy_put_BA'})
+        }
+
+        headers.push({ text: 'Short Put Premium', value: 'short_put_premium' })
+        if (this.sp_BA_col){
+          headers.push({text: 'Short Put Bid/Ask Spread', value: 'short_put_BA'})
+        }
+
+        headers.push({ text: 'Short Call Premium', value: 'short_call_premium' })
+        if (this.sc_BA_col){
+          headers.push({text: 'Short Call Bid/Ask Spread', value: 'short_call_BA'})
+        }
+        headers.push({ text: 'Buy Call Premium', value: 'buy_call_premium' })
+
+        if (this.bc_BA_col){
+          headers.push({text: 'Buy Call Bid/Ask Spread', value: 'buy_call_BA'})
+        }
+        headers.push({ text: 'Buy Put Strike', value: 'buy_put' })
+        headers.push( { text: 'Short Put Strike', value: 'short_put' })
+        headers.push({ text: 'Current Share Price', value: 'current_share_price' })
+        headers.push({text: 'Short Call Strike', value: 'short_call'})
+        headers.push({ text: 'Buy Call Strike', value: 'buy_call' })
+      return headers
+
+    }
+  },
+
   methods: {
+
+    show_BA_buy_put: function () {
+      this.bp_BA_col = true
+    },
+    show_BA_short_put: function () {
+      this.sp_BA_col = true
+    },
+    show_BA_short_call: function () {
+      this.sc_BA_col = true
+    },
+    show_BA_buy_call: function () {
+      this.bc_BA_col = true
+    },
+    hide_BA_buy_put: function () {
+      this.bp_BA_col = false
+    },
+    hide_BA_short_put: function () {
+      this.sp_BA_col = false
+    },
+    hide_BA_short_call: function () {
+      this.sc_BA_col = false
+    },
+    hide_BA_buy_call: function () {
+      this.bc_BA_col = false
+    },
     button_click: function () {
       api.get_option_data(this.ticker)
         .then(data => {
@@ -188,18 +263,11 @@ export default {
           this.condors = data
         })
     },
-    graph_condor: function (item) {
-      console.log('clicked button')
-      console.log(item)
-    },
 
     risk_reward_filter: function () {
       // console.log('clicked button!')
       // console.log(this.risk_reward_filter_value)
       this.condors = this.condors.filter(condor => condor.risk_reward > Number(this.risk_reward_filter_value))
-    },
-    strike_filter_truthy: function (condor, strike_percentage){
-      return condor.short_put < strike_percentage * Number(this.current_share_price)
     },
     strike_filter: function () {
       console.log((1.0 - Number(this.strike_filter_value)) * Number(this.current_share_price))
@@ -214,13 +282,11 @@ export default {
   data () {
     return {
 
-      graph_data: [{
-        x: 10,
-        y: 20
-      }, {
-        x: 15,
-        y: 10
-      }],
+      bp_BA_col: false,
+      sp_BA_col: false,
+      sc_BA_col: false,
+      bc_BA_col: false,
+
       expanded: [],
       expiration: '',
       ticker: '',
@@ -228,26 +294,7 @@ export default {
       strike_filter_value: '',
       items: ['hello', 'there', 'select this'],
       current_share_price: 'Current Share Price',
-      headers: [
-        {
-          text: 'Max Gain',
-          align: 'start',
-          sortable: true,
-          value: 'max_gain'
-        },
-        { text: 'Max Loss', value: 'max_loss' },
-        { text: 'Risk Reward', value: 'risk_reward' },
-        { text: 'Buy Put Strike', value: 'buy_put' },
-        { text: 'Short Put Strike', value: 'short_put' },
-        { text: 'Current Share Price', value: 'current_share_price' },
-        { text: 'Short Call Strike', value: 'short_call' },
-        { text: 'Buy Call Strike', value: 'buy_call' },
-        { text: 'Buy Put Premium', value: 'buy_put_premium' },
-        { text: 'Short Put Premium', value: 'short_put_premium' },
-        { text: 'Short Call Premium', value: 'short_call_premium' },
-        { text: 'Buy Call Premium', value: 'buy_call_premium' },
-        // { text: 'Graph', value: 'graph_button' },
-      ],
+
       condors: [
         {
           id: 1,
@@ -262,7 +309,11 @@ export default {
           buy_call_premium: 1.01,
           max_gain: 274,
           max_loss: -262,
-          risk_reward: 1.04
+          risk_reward: 1.04,
+          buy_put_BA: 0.08,
+          short_put_BA: 0.50,
+          short_call_BA: 0.10,
+          buy_call_BA: 0.02
         },
 
         {
@@ -278,7 +329,11 @@ export default {
           buy_call_premium: 1.01,
           max_gain: 274,
           max_loss: -262,
-          risk_reward: 1.04
+          risk_reward: 1.04,
+          buy_put_BA: 0.08,
+          short_put_BA: 0.50,
+          short_call_BA: 0.10,
+          buy_call_BA: 0.02
         }
 
       ]
