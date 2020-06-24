@@ -107,7 +107,7 @@
       :headers="headers"
       :items-per-page="10"
       :expanded.sync="expanded"
-      :items="condors"
+      :items="filtered_condors"
       show-expand
       single-expand
       class="elevation-1"
@@ -262,17 +262,18 @@
         api.get_condors(this.ticker, this.expiration)
           .then(data => {
             this.condors = data
+            this.filtered_condors = data
           })
       },
 
       risk_reward_filter: function () {
         // console.log('clicked button!')
         // console.log(this.risk_reward_filter_value)
-        this.condors = this.condors.filter(condor => condor.risk_reward > Number(this.risk_reward_filter_value))
+        this.filtered_condors = this.condors.filter(condor => condor.risk_reward > Number(this.risk_reward_filter_value))
       },
       strike_filter: function () {
         console.log((1.0 - Number(this.strike_filter_value)) * Number(this.current_share_price))
-        this.condors = this.condors.filter(condor =>
+        this.filtered_condors = this.condors.filter(condor =>
           (condor.short_put < (1.0 - Number(this.strike_filter_value)) * Number(this.current_share_price))
           &&
           (condor.short_call > (1.0 + Number(this.strike_filter_value)) * Number(this.current_share_price))
@@ -295,6 +296,50 @@
         strike_filter_value: '',
         items: ['hello', 'there', 'select this'],
         current_share_price: 'Current Share Price',
+
+
+        filtered_condors: [
+          {
+            id: 1,
+            buy_put: 45.0,
+            short_put: 50.0,
+            current_share_price: 50.0,
+            short_call: 55.0,
+            buy_call: 60.0,
+            buy_put_premium: 0.78,
+            short_put_premium: 2.21,
+            short_call_premium: 2.32,
+            buy_call_premium: 1.01,
+            max_gain: 274,
+            max_loss: -262,
+            risk_reward: 1.04,
+            buy_put_BA: 0.08,
+            short_put_BA: 0.50,
+            short_call_BA: 0.10,
+            buy_call_BA: 0.02
+          },
+
+          {
+            id: 2,
+            buy_put: 45.0,
+            short_put: 50.0,
+            current_share_price: 50.0,
+            short_call: 55.0,
+            buy_call: 60.0,
+            buy_put_premium: 0.78,
+            short_put_premium: 2.21,
+            short_call_premium: 2.32,
+            buy_call_premium: 1.01,
+            max_gain: 274,
+            max_loss: -262,
+            risk_reward: 1.04,
+            buy_put_BA: 0.08,
+            short_put_BA: 0.50,
+            short_call_BA: 0.10,
+            buy_call_BA: 0.02
+          }
+
+        ],
 
         condors: [
           {
