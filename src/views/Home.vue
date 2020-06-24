@@ -1,7 +1,6 @@
 <template>
   <v-app>
 
-
       <v-row align-content="center">
         <v-col cols="2"></v-col>
         <v-col cols="4">
@@ -38,8 +37,6 @@
         <v-col cols="2"></v-col>
 
       </v-row>
-
-
 
   </v-app>
 </template>

@@ -17,7 +17,12 @@ if (process.env.NODE_ENV === 'production') {
       console.log('Content has been cached for offline use.')
     },
     updatefound () {
-      console.log('New content is downloading.')
+      caches.keys().then(cacheNames => {
+        cacheNames.forEach(cacheName => {
+          caches.delete(cacheName);
+        });
+      });
+      console.log("New content is downloading.");
     },
     updated () {
       console.log('New content is available; please refresh.')

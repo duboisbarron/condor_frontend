@@ -59,10 +59,7 @@
         this.fillData()
       },
 
-
-
       methods: {
-
 
         get_y_values(options_formulas){
 
@@ -89,15 +86,11 @@
 
         get_x_values(current_share_price){
           var x_vals = []
-
           var lower_bound = 0.5 * current_share_price
           var upper_bound = 1.5 * current_share_price
-
           var step_size = 0.10
 
-
           var next_val = lower_bound
-
 
           while (next_val < upper_bound) {
 
@@ -144,8 +137,7 @@
         }
 
       },
-
-
+      
     }
 </script>
 
