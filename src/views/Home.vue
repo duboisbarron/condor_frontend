@@ -1,43 +1,44 @@
 <template>
   <v-app>
-
-      <v-row align-content="center">
-        <v-col cols="2"></v-col>
-        <v-col cols="4">
-          <v-hover
-            v-slot:default="{ hover }"
+    <v-row align-content="center">
+      <v-col cols="2" />
+      <v-col cols="4">
+        <v-hover
+          v-slot:default="{ hover }"
+        >
+          <v-card
+            :elevation="hover ? 12 : 2"
+            class="mx-auto"
+            height="100"
+            max-width="350"
+            @click="go_to_graph"
           >
-            <v-card
-              @click="go_to_graph"
-              :elevation="hover ? 12 : 2"
-              class="mx-auto"
-              height="100"
-              max-width="350"
-            >
-              <h1 style="color: seagreen;"> Option Graphs </h1>
-            </v-card>
-          </v-hover>
-        </v-col>
+            <h1 style="color: seagreen;">
+              Option Graphs
+            </h1>
+          </v-card>
+        </v-hover>
+      </v-col>
 
-        <v-col cols="4">
-          <v-hover
-            v-slot:default="{ hover }"
+      <v-col cols="4">
+        <v-hover
+          v-slot:default="{ hover }"
+        >
+          <v-card
+            :elevation="hover ? 12 : 2"
+            class="mx-auto"
+            height="100"
+            max-width="350"
+            @click="go_to_condors"
           >
-            <v-card
-              @click="go_to_condors"
-              :elevation="hover ? 12 : 2"
-              class="mx-auto"
-              height="100"
-              max-width="350"
-            >
-              <h1 style="color: seagreen;"> Find Iron Condors</h1>
-            </v-card>
-          </v-hover>
-        </v-col>
-        <v-col cols="2"></v-col>
-
-      </v-row>
-
+            <h1 style="color: seagreen;">
+              Find Iron Condors
+            </h1>
+          </v-card>
+        </v-hover>
+      </v-col>
+      <v-col cols="2" />
+    </v-row>
   </v-app>
 </template>
 
