@@ -9,6 +9,7 @@
 <style>
   a {  text-decoration: none; color: black;}
   a:visited { color: black; }
+
   #app {
     font-family: 'Avenir', Helvetica, Arial, sans-serif;
     -webkit-font-smoothing: antialiased;

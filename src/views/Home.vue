@@ -6,6 +6,7 @@
         <v-hover
           v-slot:default="{ hover }"
         >
+
           <v-card
             :elevation="hover ? 12 : 2"
             class="mx-auto"

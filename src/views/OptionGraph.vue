@@ -65,6 +65,7 @@
             color="indigo"
             @click="increment_num_options"
           >
+
             <v-icon dark>
               mdi-plus
             </v-icon>

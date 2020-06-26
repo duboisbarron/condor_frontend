@@ -118,6 +118,7 @@ export default {
           // this is the y axis
           data: this.graph_y_values,
           // backgroundColor: 'red',
+
           backgroundColor: this.graph_colors,
           bordorColor: this.graph_colors,
           // fill: true,

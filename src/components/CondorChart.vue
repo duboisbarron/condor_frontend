@@ -21,6 +21,7 @@ export default {
 
       options: {
         title: {
+
           display: true,
           text: 'Profit / Loss Diagram'
         },
